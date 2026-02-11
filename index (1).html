@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Für Dich ♥</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --rose:#c9184a;--rose-light:#ff4d6d;--rose-dark:#800f2f;
+  --pink:#ffb3c6;--pink-soft:#fff0f3;--cream:#fff5f7;
+  --gold:#d4a373;--gold-light:#e9c46a;
+  --text:#3d0814;--text-light:#6b2737;--white:#fff;
+  --err:#dc2626;--ok:#16a34a;
+}
+body{font-family:'Quicksand',sans-serif;background:var(--cream);min-height:100vh;min-height:100dvh;overflow-x:hidden;color:var(--text)}
+
+/* Hearts */
+.hearts-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.fh{position:absolute;opacity:.12;color:var(--rose);animation:floatUp linear infinite}
+@keyframes floatUp{
+  0%{transform:translateY(110vh) rotate(0) scale(1);opacity:0}
+  10%{opacity:.12}90%{opacity:.12}
+  100%{transform:translateY(-10vh) rotate(360deg) scale(.5);opacity:0}
+}
+
+/* Pages */
+.page{display:none;min-height:100vh;min-height:100dvh;position:relative;z-index:1}
+.page.active{display:flex}
+
+/* Animations */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heartbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+@keyframes shake{10%,90%{transform:translate3d(-2px,0,0)}20%,80%{transform:translate3d(4px,0,0)}30%,50%,70%{transform:translate3d(-6px,0,0)}40%,60%{transform:translate3d(6px,0,0)}}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-20vh) rotate(0)}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
+@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+/* Password Page */
+#passwordPage{flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;background:radial-gradient(ellipse at 50% 30%,rgba(255,77,109,.06) 0%,transparent 70%)}
+.pw-wrap{max-width:400px;width:100%;animation:fadeInUp .8s ease-out}
+.pw-heart{font-size:3rem;margin-bottom:1rem;display:inline-block;animation:heartbeat 1.5s ease-in-out infinite}
+.pw-title{font-family:'Great Vibes',cursive;font-size:clamp(1.8rem,5vw,2.8rem);color:var(--rose);margin-bottom:.3rem}
+.pw-sub{font-family:'Playfair Display',serif;font-style:italic;color:var(--text-light);font-size:.95rem;margin-bottom:2rem}
+.pw-input{width:100%;padding:1rem 1.2rem;border:2px solid var(--pink);border-radius:14px;font-family:'Quicksand',sans-serif;font-size:1.1rem;text-align:center;outline:none;background:var(--white);transition:all .3s;letter-spacing:2px}
+.pw-input:focus{border-color:var(--rose);box-shadow:0 0 0 4px rgba(201,24,74,.1)}
+.pw-input.error{border-color:var(--err);animation:shake .5s}
+.pw-btn{width:100%;padding:.9rem;margin-top:.8rem;background:linear-gradient(135deg,var(--rose),var(--rose-light));color:#fff;border:none;border-radius:14px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:1rem;cursor:pointer;transition:all .3s}
+.pw-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,24,74,.3)}
+.pw-err{color:var(--err);font-size:.85rem;margin-top:.6rem;min-height:1.2rem}
+
+/* Welcome */
+#welcomePage{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;background:radial-gradient(ellipse at 50% 30%,rgba(255,77,109,.08) 0%,transparent 70%)}
+.wc{max-width:520px;animation:fadeInUp 1s ease-out}
+.wc-heart{font-size:4rem;margin-bottom:1rem;animation:heartbeat 1.5s ease-in-out infinite;display:inline-block}
+.wc-title{font-family:'Great Vibes',cursive;font-size:clamp(2.2rem,6vw,3.8rem);color:var(--rose);margin-bottom:.5rem;line-height:1.3}
+.wc-sub{font-family:'Playfair Display',serif;font-size:clamp(1rem,2.5vw,1.3rem);color:var(--text-light);margin-bottom:2rem;font-weight:400;line-height:1.6;font-style:italic}
+.wc-div{width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.5rem auto}
+.start-btn{padding:.9rem 2.5rem;font-size:1rem;border-radius:14px;background:linear-gradient(135deg,var(--rose),var(--rose-light));color:#fff;border:none;font-family:'Quicksand',sans-serif;font-weight:600;cursor:pointer;transition:all .3s}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,24,74,.3)}
+
+/* Quiz */
+#quizPage{flex-direction:column;align-items:center;justify-content:center;padding:2rem;background:radial-gradient(ellipse at 50% 30%,rgba(255,77,109,.06) 0%,transparent 70%)}
+.qz{max-width:500px;width:100%;text-align:center}
+.prog-wrap{margin-bottom:2rem}
+.prog-label{font-size:.8rem;color:var(--text-light);margin-bottom:.5rem;font-weight:500}
+.prog-bg{width:100%;height:8px;background:var(--pink);border-radius:10px;overflow:hidden}
+.prog-fill{height:100%;border-radius:10px;width:0;background:linear-gradient(90deg,var(--rose),var(--rose-light),var(--gold-light));transition:width .6s cubic-bezier(.4,0,.2,1)}
+.q-card{background:var(--white);border-radius:20px;padding:2.5rem 2rem;box-shadow:0 8px 30px rgba(201,24,74,.08);border:1px solid rgba(255,179,198,.3);transition:all .3s}
+.q-card.shake{animation:shake .6s cubic-bezier(.36,.07,.19,.97) both}
+.q-card.wrong{border-color:var(--err);box-shadow:0 8px 30px rgba(220,38,38,.15);background:#fff5f5}
+.q-num{font-family:'Great Vibes',cursive;font-size:1.4rem;color:var(--gold);margin-bottom:.5rem}
+.q-text{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,3vw,1.4rem);color:var(--text);margin-bottom:1.8rem;line-height:1.5;font-weight:600}
+.a-grid{display:flex;flex-direction:column;gap:.7rem}
+.a-btn{padding:.9rem 1.2rem;background:var(--pink-soft);border:2px solid var(--pink);border-radius:12px;font-family:'Quicksand',sans-serif;font-size:1rem;font-weight:500;color:var(--text);cursor:pointer;transition:all .3s}
+.a-btn:hover{background:var(--pink);border-color:var(--rose-light);transform:translateY(-2px);box-shadow:0 4px 12px rgba(201,24,74,.15)}
+.a-btn.correct{background:#dcfce7;border-color:var(--ok);color:#166534}
+.a-btn.incorrect{background:#fee2e2;border-color:var(--err);color:#991b1b}
+
+/* Reward */
+#rewardPage{flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;background:radial-gradient(ellipse at 50% 30%,rgba(212,163,115,.1) 0%,transparent 70%)}
+.rw{max-width:500px;animation:fadeInUp 1s ease-out}
+.rw-emoji{font-size:3.5rem;margin-bottom:1rem;animation:heartbeat 1.5s ease-in-out infinite;display:inline-block}
+.rw-title{font-family:'Great Vibes',cursive;font-size:clamp(2rem,5vw,3rem);color:var(--rose);margin-bottom:.5rem}
+.rw-sub{font-family:'Playfair Display',serif;font-style:italic;color:var(--text-light);margin-bottom:2rem;font-size:1.1rem}
+.rw-card{background:var(--white);border-radius:20px;padding:2.5rem 2rem;box-shadow:0 8px 30px rgba(212,163,115,.15);border:2px solid var(--gold);position:relative;overflow:hidden}
+.rw-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold))}
+.gift-label{font-size:.85rem;text-transform:uppercase;letter-spacing:3px;color:var(--gold);margin-bottom:1rem;font-weight:600}
+.gift-text{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,3.5vw,1.8rem);color:var(--text);line-height:1.6;font-weight:600}
+.rw-footer{margin-top:2rem;font-family:'Great Vibes',cursive;font-size:1.5rem;color:var(--rose-light)}
+.confetti{position:fixed;z-index:1000;pointer-events:none;animation:confettiFall linear forwards}
+
+/* Admin */
+#adminPage{flex-direction:column;padding:1.5rem;min-height:100vh;background:#fafafa}
+.adm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.adm-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--rose-dark)}
+.adm-acts{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.btn{padding:.6rem 1.2rem;border:none;border-radius:10px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .3s}
+.btn-p{background:linear-gradient(135deg,var(--rose),var(--rose-light));color:#fff}
+.btn-p:hover{box-shadow:0 4px 12px rgba(201,24,74,.3);transform:translateY(-1px)}
+.btn-s{background:var(--white);color:var(--text);border:2px solid #e5e5e5}
+.btn-s:hover{border-color:var(--rose)}
+.btn-d{background:#fee2e2;color:var(--err)}
+.btn-d:hover{background:#fecaca}
+.btn-ok{background:linear-gradient(135deg,var(--ok),#22c55e);color:#fff}
+.btn-ok:hover{box-shadow:0 4px 12px rgba(22,163,74,.3)}
+.adm-sec{background:var(--white);border-radius:16px;padding:1.5rem;margin-bottom:1.2rem;box-shadow:0 2px 10px rgba(0,0,0,.04);border:1px solid #f0f0f0}
+.adm-sec h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid #f0f0f0}
+.adm-sec label{display:block;font-size:.85rem;font-weight:600;color:var(--text-light);margin-bottom:.3rem;margin-top:.8rem}
+.adm-sec label:first-of-type{margin-top:0}
+.ai,.at{width:100%;padding:.7rem 1rem;border:2px solid #e5e5e5;border-radius:10px;font-family:'Quicksand',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s}
+.ai:focus,.at:focus{border-color:var(--rose)}
+.at{resize:vertical;min-height:80px}
+.q-list{display:flex;flex-direction:column;gap:1rem}
+.q-item{background:var(--pink-soft);border-radius:12px;padding:1.2rem;border:1px solid var(--pink)}
+.q-item-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem}
+.q-item-num{font-family:'Great Vibes',cursive;font-size:1.2rem;color:var(--rose)}
+.q-item-acts{display:flex;gap:.3rem}
+.btn-sm{padding:.3rem .7rem;font-size:.75rem;border-radius:8px}
+.q-item-text{font-weight:600;margin-bottom:.4rem;color:var(--text)}
+.q-item-ans{font-size:.85rem;color:var(--text-light)}
+.q-item-ans .ca{color:var(--ok);font-weight:600}
+.q-form{background:var(--cream);border-radius:12px;padding:1.2rem;margin-top:1rem;border:2px dashed var(--pink);display:none}
+.q-form.show{display:block}
+.a-row{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem}
+.a-row input[type="text"]{flex:1;padding:.5rem .8rem;border:2px solid #e5e5e5;border-radius:8px;font-family:'Quicksand',sans-serif;font-size:.85rem;outline:none}
+.a-row input[type="text"]:focus{border-color:var(--rose)}
+.a-row input[type="radio"]{accent-color:var(--rose);width:18px;height:18px;cursor:pointer}
+.rm-btn{background:none;border:none;color:#aaa;font-size:1.2rem;cursor:pointer;padding:.2rem}
+.rm-btn:hover{color:var(--err)}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:#fff;padding:.8rem 1.5rem;border-radius:12px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:.9rem;z-index:10000;transition:transform .4s cubic-bezier(.4,0,.2,1);box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.save-st{font-size:.8rem;color:var(--ok);font-weight:500;opacity:0;transition:opacity .3s}
+.save-st.v{opacity:1}
+
+@media(max-width:600px){
+  .adm-head{flex-direction:column;align-items:flex-start}
+  .q-card,.rw-card{padding:2rem 1.5rem}
+}
+</style>
+</head>
+<body>
+
+<div class="hearts-bg" id="hbg"></div>
+
+<!-- PASSWORD -->
+<div class="page active" id="passwordPage">
+  <div class="pw-wrap">
+    <div class="pw-heart">💕</div>
+    <h1 class="pw-title">Für Dich</h1>
+    <p class="pw-sub">Gib das Passwort ein, um fortzufahren...</p>
+    <input type="text" class="pw-input" id="pwIn" placeholder="••••••••" autocomplete="off" maxlength="30">
+    <button class="pw-btn" onclick="checkPw()">Öffnen ♥</button>
+    <div class="pw-err" id="pwErr"></div>
+  </div>
+</div>
+
+<!-- WELCOME -->
+<div class="page" id="welcomePage">
+  <div class="wc">
+    <div class="wc-heart">💕</div>
+    <h1 class="wc-title" id="wcTitle"></h1>
+    <div class="wc-div"></div>
+    <p class="wc-sub" id="wcSub"></p>
+    <button class="start-btn" onclick="startQuiz()">Los geht's!</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="page" id="quizPage">
+  <div class="qz">
+    <div class="prog-wrap">
+      <div class="prog-label" id="progLbl"></div>
+      <div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+    <div class="q-card" id="qCard">
+      <div class="q-num" id="qNum"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="a-grid" id="aGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REWARD -->
+<div class="page" id="rewardPage">
+  <div class="rw">
+    <div class="rw-emoji">🎁</div>
+    <h1 class="rw-title">Du hast es geschafft!</h1>
+    <p class="rw-sub">Alle Fragen richtig beantwortet ♥</p>
+    <div class="rw-card">
+      <div class="gift-label">✦ Dein Geschenk ✦</div>
+      <div class="gift-text" id="giftText"></div>
+    </div>
+    <div class="rw-footer">In Liebe, für immer ♥</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="adminPage">
+  <div class="adm-head">
+    <h1 class="adm-title">♥ Admin Backend</h1>
+    <div class="adm-acts">
+      <span class="save-st" id="saveSt">✓ Gespeichert</span>
+      <button class="btn btn-ok" onclick="saveAll()">💾 Speichern</button>
+      <button class="btn btn-s" onclick="preview()">👁 Vorschau</button>
+      <button class="btn btn-s" onclick="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="adm-sec">
+    <h3>Willkommens-Seite</h3>
+    <label>Titel</label>
+    <input type="text" class="ai" id="admTitle">
+    <label>Untertitel</label>
+    <textarea class="at" id="admSub"></textarea>
+  </div>
+  <div class="adm-sec">
+    <h3>Geschenk-Text</h3>
+    <label>Was ist das Geschenk?</label>
+    <textarea class="at" id="admGift"></textarea>
+  </div>
+  <div class="adm-sec">
+    <h3>Passwörter</h3>
+    <label>Quiz-Passwort (für sie)</label>
+    <input type="text" class="ai" id="admPwQuiz">
+    <label>Admin-Passwort (für dich)</label>
+    <input type="text" class="ai" id="admPwAdmin">
+  </div>
+  <div class="adm-sec">
+    <h3>Fragen</h3>
+    <div class="q-list" id="qList"></div>
+    <button class="btn btn-p" style="margin-top:1rem;width:100%" onclick="showAddForm()">+ Neue Frage hinzufügen</button>
+    <div class="q-form" id="qForm">
+      <label>Frage</label>
+      <input type="text" class="ai" id="fqText" placeholder="z.B. Wie heißt mein Hund?">
+      <label>Antworten <span style="font-weight:400;color:#aaa">(richtige auswählen ●)</span></label>
+      <div id="fAnswers"></div>
+      <button class="btn btn-s btn-sm" style="margin-top:.5rem" onclick="addAField()">+ Antwort</button>
+      <div style="display:flex;gap:.5rem;margin-top:1rem">
+        <button class="btn btn-ok" onclick="saveQ()">Speichern</button>
+        <button class="btn btn-s" onclick="cancelForm()">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== DEFAULT DATA (deine echten Fragen!) ===== */
+const DEFAULTS = {
+  welcomeTitle: "Schön, dass du mich als dein Valentin ausgewählt hast",
+  welcomeSubtitle: "Hier kommt dein Geschenk... aber du musst davor noch ein paar Fragen beantworten!",
+  giftText: "Eine Öl Massage im Kerzenschein",
+  quizPassword: "06.10.2025",
+  adminPassword: "28.08.2001",
+  questions: [
+    {
+      text: "An welcher S-Bahn Station haben wir uns das erste Mal getroffen?",
+      answers: ["Friedrichstraße", "Olympiastadion", "Alexanderplatz", "Westkreuz"],
+      correct: 1
+    },
+    {
+      text: "Warum hält die Lampe nicht?",
+      answers: ["Der Kleber ist schlecht", "Kai hat Mist gebaut"],
+      correct: 0
+    },
+    {
+      text: "Was ist unser Lied?",
+      answers: ["Hells Bells", "Another Day in Paradise", "Atemlos", "Perfect"],
+      correct: 1
+    },
+    {
+      text: "Hochstraße wie viel?",
+      answers: ["12", "39", "173", "7"],
+      correct: 3
+    },
+    {
+      text: "Wo hatten wir unseren ersten Kuss?",
+      answers: ["Redaktion", "Couch", "Nothaltebuch", "Balkon"],
+      correct: 1
+    },
+    {
+      text: "Wie heißt mein Hund?",
+      answers: ["Theo", "Holly", "Molly", "Bella"],
+      correct: 1
+    },
+    {
+      text: "Wer hat zuerst \"Ich liebe dich\" gesagt?",
+      answers: ["Kai", "Anna"],
+      correct: 1
+    },
+    {
+      text: "Wie viele Weingläser stehen bei uns zu Hause auf dem Tisch?",
+      answers: ["Eins", "Zwei"],
+      correct: 0
+    },
+    {
+      text: "Dort oder Dorte?",
+      answers: ["Dort", "Dorte"],
+      correct: 1
+    },
+    {
+      text: "Welches Gericht kocht Kai nur wegen dir?",
+      answers: ["Bami Goreng", "Pasta", "Reistopf", "Reispfanne"],
+      correct: 3
+    }
+  ]
+};
+
+let D = {};
+let curQ = 0;
+let editIdx = -1;
+
+/* ===== STORAGE ===== */
+function sGet(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } }
+function sSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
+
+/* ===== LOAD ===== */
+function loadData() {
+  const saved = sGet('vq_data');
+  if (saved && saved.questions && saved.questions.length) {
+    D = { ...JSON.parse(JSON.stringify(DEFAULTS)), ...saved };
+  } else {
+    D = JSON.parse(JSON.stringify(DEFAULTS));
+  }
+  apply();
+}
+
+function apply() {
+  document.getElementById('wcTitle').textContent = D.welcomeTitle;
+  document.getElementById('wcSub').textContent = D.welcomeSubtitle;
+  document.getElementById('giftText').textContent = D.giftText;
+}
+
+/* ===== PAGES ===== */
+function showP(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* ===== PASSWORD ===== */
+function checkPw() {
+  const v = document.getElementById('pwIn').value.trim();
+  const e = document.getElementById('pwErr');
+  const i = document.getElementById('pwIn');
+  if (v === D.adminPassword) { e.textContent = ''; showP('adminPage'); popAdmin(); }
+  else if (v === D.quizPassword) { e.textContent = ''; showP('welcomePage'); }
+  else { e.textContent = 'Falsches Passwort! Versuch es nochmal ♥'; i.classList.add('error'); vib(); setTimeout(() => i.classList.remove('error'), 600); }
+}
+
+/* ===== QUIZ ===== */
+function startQuiz() {
+  if (!D.questions || !D.questions.length) { toast('Keine Fragen!'); return; }
+  curQ = 0; showP('quizPage'); renderQ();
+}
+
+function renderQ() {
+  const q = D.questions[curQ], t = D.questions.length;
+  document.getElementById('progLbl').textContent = `Frage ${curQ + 1} von ${t}`;
+  document.getElementById('progFill').style.width = (curQ / t * 100) + '%';
+  document.getElementById('qNum').textContent = `Frage ${curQ + 1}`;
+  document.getElementById('qText').textContent = q.text;
+  const g = document.getElementById('aGrid'); g.innerHTML = '';
+  q.answers.forEach((a, i) => {
+    const b = document.createElement('button');
+    b.className = 'a-btn'; b.textContent = a;
+    b.onclick = () => selAns(i);
+    b.style.animation = `fadeInUp .4s ease-out ${i * .1}s both`;
+    g.appendChild(b);
+  });
+  document.getElementById('qCard').classList.remove('shake', 'wrong');
+}
+
+function selAns(idx) {
+  const q = D.questions[curQ], bs = document.querySelectorAll('.a-btn'), c = document.getElementById('qCard');
+  bs.forEach(b => b.style.pointerEvents = 'none');
+  if (idx === q.correct) {
+    bs[idx].classList.add('correct');
+    setTimeout(() => {
+      curQ++;
+      if (curQ >= D.questions.length) {
+        document.getElementById('progFill').style.width = '100%';
+        setTimeout(() => { showP('rewardPage'); confetti(); }, 400);
+      } else renderQ();
+    }, 800);
+  } else {
+    bs[idx].classList.add('incorrect'); c.classList.add('shake', 'wrong'); vib();
+    setTimeout(() => {
+      bs.forEach(b => { b.classList.remove('incorrect'); b.style.pointerEvents = 'auto'; });
+      c.classList.remove('shake', 'wrong');
+    }, 1200);
+  }
+}
+
+function vib() { if (navigator.vibrate) navigator.vibrate([100, 50, 100]); }
+
+function confetti() {
+  const cols = ['#c9184a', '#ff4d6d', '#ffb3c6', '#d4a373', '#e9c46a', '#ff758f'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const p = document.createElement('div'); p.className = 'confetti';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.width = (6 + Math.random() * 8) + 'px';
+      p.style.height = (6 + Math.random() * 8) + 'px';
+      p.style.backgroundColor = cols[Math.floor(Math.random() * cols.length)];
+      p.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+      p.style.animationDuration = (2 + Math.random() * 3) + 's';
+      document.body.appendChild(p); setTimeout(() => p.remove(), 5000);
+    }, i * 40);
+  }
+}
+
+/* ===== ADMIN ===== */
+function popAdmin() {
+  document.getElementById('admTitle').value = D.welcomeTitle;
+  document.getElementById('admSub').value = D.welcomeSubtitle;
+  document.getElementById('admGift').value = D.giftText;
+  document.getElementById('admPwQuiz').value = D.quizPassword;
+  document.getElementById('admPwAdmin').value = D.adminPassword;
+  renderQList();
+}
+
+function renderQList() {
+  const l = document.getElementById('qList'); l.innerHTML = '';
+  D.questions.forEach((q, i) => {
+    const d = document.createElement('div'); d.className = 'q-item';
+    const ah = q.answers.map((a, ai) => ai === q.correct ? `<span class="ca">✓ ${a}</span>` : a).join(' · ');
+    d.innerHTML = `<div class="q-item-head"><span class="q-item-num">Frage ${i + 1}</span><div class="q-item-acts">
+      <button class="btn btn-s btn-sm" onclick="editQ(${i})">✏️</button>
+      <button class="btn btn-d btn-sm" onclick="delQ(${i})">🗑</button>
+      ${i > 0 ? `<button class="btn btn-s btn-sm" onclick="moveQ(${i},-1)">↑</button>` : ''}
+      ${i < D.questions.length - 1 ? `<button class="btn btn-s btn-sm" onclick="moveQ(${i},1)">↓</button>` : ''}
+    </div></div><div class="q-item-text">${q.text}</div><div class="q-item-ans">${ah}</div>`;
+    l.appendChild(d);
+  });
+}
+
+function showAddForm() {
+  editIdx = -1; document.getElementById('fqText').value = '';
+  document.getElementById('qForm').classList.add('show');
+  const c = document.getElementById('fAnswers'); c.innerHTML = '';
+  addAField(); addAField();
+  document.getElementById('qForm').scrollIntoView({ behavior: 'smooth' });
+}
+
+function editQ(i) {
+  editIdx = i; const q = D.questions[i];
+  document.getElementById('fqText').value = q.text;
+  const c = document.getElementById('fAnswers'); c.innerHTML = '';
+  q.answers.forEach((a, ai) => addAField(a, ai === q.correct));
+  document.getElementById('qForm').classList.add('show');
+  document.getElementById('qForm').scrollIntoView({ behavior: 'smooth' });
+}
+
+function addAField(v = '', cor = false) {
+  const c = document.getElementById('fAnswers'), idx = c.children.length;
+  const r = document.createElement('div'); r.className = 'a-row';
+  r.innerHTML = `<input type="radio" name="corAns" value="${idx}" ${cor ? 'checked' : ''}>
+    <input type="text" value="${v}" placeholder="Antwort ${idx + 1}...">
+    <button class="rm-btn" onclick="this.parentElement.remove()" title="Entfernen">×</button>`;
+  c.appendChild(r);
+}
+
+function saveQ() {
+  const text = document.getElementById('fqText').value.trim();
+  if (!text) { toast('Bitte Frage eingeben!'); return; }
+  const rows = document.querySelectorAll('#fAnswers .a-row'), answers = []; let correct = -1;
+  rows.forEach(r => {
+    const t = r.querySelector('input[type="text"]').value.trim();
+    const ch = r.querySelector('input[type="radio"]').checked;
+    if (t) { if (ch) correct = answers.length; answers.push(t); }
+  });
+  if (answers.length < 2) { toast('Mindestens 2 Antworten!'); return; }
+  if (correct === -1) { toast('Richtige Antwort auswählen!'); return; }
+  if (editIdx >= 0) D.questions[editIdx] = { text, answers, correct };
+  else D.questions.push({ text, answers, correct });
+  cancelForm(); renderQList(); toast('Frage gespeichert!');
+}
+
+function cancelForm() { document.getElementById('qForm').classList.remove('show'); editIdx = -1; }
+function delQ(i) { if (confirm('Frage wirklich löschen?')) { D.questions.splice(i, 1); renderQList(); toast('Gelöscht!'); } }
+function moveQ(i, d) { const n = i + d; if (n < 0 || n >= D.questions.length) return; [D.questions[i], D.questions[n]] = [D.questions[n], D.questions[i]]; renderQList(); }
+
+function saveAll() {
+  D.welcomeTitle = document.getElementById('admTitle').value.trim() || DEFAULTS.welcomeTitle;
+  D.welcomeSubtitle = document.getElementById('admSub').value.trim() || DEFAULTS.welcomeSubtitle;
+  D.giftText = document.getElementById('admGift').value.trim() || DEFAULTS.giftText;
+  D.quizPassword = document.getElementById('admPwQuiz').value.trim() || DEFAULTS.quizPassword;
+  D.adminPassword = document.getElementById('admPwAdmin').value.trim() || DEFAULTS.adminPassword;
+  apply();
+  const ok = sSet('vq_data', D);
+  if (ok) { const s = document.getElementById('saveSt'); s.classList.add('v'); setTimeout(() => s.classList.remove('v'), 2000); toast('Alles gespeichert! ♥'); }
+  else toast('Fehler beim Speichern!');
+}
+
+function preview() { saveAll(); setTimeout(() => showP('welcomePage'), 300); }
+function logout() { showP('passwordPage'); document.getElementById('pwIn').value = ''; }
+
+/* ===== TOAST ===== */
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+
+/* ===== HEARTS ===== */
+!function () {
+  const bg = document.getElementById('hbg'), h = ['♥', '♡', '❤', '💕', '💗'];
+  for (let i = 0; i < 20; i++) {
+    const s = document.createElement('span'); s.className = 'fh';
+    s.textContent = h[Math.floor(Math.random() * h.length)];
+    s.style.left = Math.random() * 100 + '%';
+    s.style.fontSize = (.8 + Math.random() * 1.2) + 'rem';
+    s.style.animationDuration = (8 + Math.random() * 12) + 's';
+    s.style.animationDelay = (Math.random() * 15) + 's';
+    bg.appendChild(s);
+  }
+}();
+
+/* ===== INIT ===== */
+loadData();
+document.getElementById('pwIn').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
+</script>
+</body>
+</html>
